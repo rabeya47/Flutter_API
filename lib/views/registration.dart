@@ -5,14 +5,15 @@ import 'package:flutter_api/constants/routes.dart';
 import 'package:flutter_api/model/user.dart';
 import 'package:flutter_api/networks/http_helper.dart';
 
-class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+class Registration extends StatefulWidget {
+  const Registration({Key? key}) : super(key: key);
 
   @override
-  _LoginState createState() => _LoginState();
+  _RegistrationState createState() => _RegistrationState();
 }
 
-class _LoginState extends State<Login> {
+class _RegistrationState extends State<Registration> {
+  TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -21,24 +22,27 @@ class _LoginState extends State<Login> {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-            image: AssetImage('assets/images/login.png'), fit: BoxFit.cover),
+            image: AssetImage('assets/images/register.png'), fit: BoxFit.cover),
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
         body: Stack(
           children: [
-            Container(),
             Container(
-              padding: EdgeInsets.only(left: 35, top: 130),
+              padding: EdgeInsets.only(left: 35, top: 30),
               child: Text(
-                'Welcome',
+                'Create\nAccount',
                 style: TextStyle(color: Colors.white, fontSize: 33),
               ),
             ),
             SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * 0.5),
+                    top: MediaQuery.of(context).size.height * 0.28),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -46,13 +50,24 @@ class _LoginState extends State<Login> {
                       margin: EdgeInsets.only(left: 35, right: 35),
                       child: Column(
                         children: [
-                          TextField(
-                            controller: emailController,
-                            style: TextStyle(color: Colors.black),
+                          TextField(  //name Textfield
+                            controller: nameController,
+                            style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
-                                fillColor: Colors.grey.shade100,
-                                filled: true,
-                                hintText: "Email",
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                hintText: "Name",
+                                hintStyle: TextStyle(color: Colors.white),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 )),
@@ -60,14 +75,50 @@ class _LoginState extends State<Login> {
                           SizedBox(
                             height: 30,
                           ),
-                          TextField(
+                          TextField(  // email textfield
+                            controller: emailController,
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                hintText: "Email",
+                                hintStyle: TextStyle(color: Colors.white),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                )),
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          TextField(   // password Textfield
                             controller: passwordController,
-                            style: TextStyle(),
+                            style: TextStyle(color: Colors.white),
                             obscureText: true,
                             decoration: InputDecoration(
-                                fillColor: Colors.grey.shade100,
-                                filled: true,
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                  ),
+                                ),
                                 hintText: "Password",
+                                hintStyle: TextStyle(color: Colors.white),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 )),
@@ -79,9 +130,11 @@ class _LoginState extends State<Login> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Sign in',
+                                'Registration',
                                 style: TextStyle(
-                                    fontSize: 27, fontWeight: FontWeight.w700),
+                                    color: Colors.white,
+                                    fontSize: 27,
+                                    fontWeight: FontWeight.w700),
                               ),
                               CircleAvatar(
                                 radius: 30,
@@ -89,22 +142,20 @@ class _LoginState extends State<Login> {
                                 child: IconButton(
                                     color: Colors.white,
                                     onPressed: () {
-                                      print(emailController.text);
-                                      print(passwordController.text);
 
 
+                                      String name = nameController.text;
                                       String email = emailController.text;
                                       String password = passwordController.text;
 
-                                      User user = User(
+                                      User user = new User(
+                                          name: name,
                                           email: email,
-                                          password: password,
-                                          name: ''
+                                          password: password
                                       );
+                                      print(user);
 
-
-
-                                      login(user).then((res) {
+                                      registration(user).then((res) {
 
 
                                         Map<String,dynamic> map = jsonDecode(res.body);
@@ -112,20 +163,21 @@ class _LoginState extends State<Login> {
 
                                         if(map['statusCode'] == 200){
                                           SnackBar snackBar = SnackBar(
-                                            content: Text('Sign in Successfull'),
+                                            content: Text('Sign up Successfull'),
                                           );
                                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                                           Navigator.pushNamed(context, Routes.homepage);
 
                                         }else{
                                           SnackBar snackBar = SnackBar(
-                                            content: Text('Sign in failed'),
+                                            content: Text('Sign up failed'),
                                           );
                                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                                         }
 
 
                                       });
+
 
 
                                     },
@@ -143,28 +195,19 @@ class _LoginState extends State<Login> {
                             children: [
                               TextButton(
                                 onPressed: () {
-                                  Navigator.pushNamed(context, Routes.registration); //call register page
+                                  Navigator.pushNamed(context, Routes.login);
                                 },
+
                                 child: Text(
-                                  'Registration',
+                                  'Login',
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                       decoration: TextDecoration.underline,
-                                      color: Color(0xff4c505b),
+                                      color: Colors.white,
                                       fontSize: 18),
                                 ),
                                 style: ButtonStyle(),
                               ),
-                              TextButton(
-                                  onPressed: () {},
-                                  child: Text(
-                                    'Forgot Password',
-                                    style: TextStyle(
-                                      decoration: TextDecoration.underline,
-                                      color: Color(0xff4c505b),
-                                      fontSize: 18,
-                                    ),
-                                  )),
                             ],
                           )
                         ],
