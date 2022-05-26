@@ -10,7 +10,7 @@ var host = 'http://192.168.1.107:8081';    //home
 var registrationApi = host+'/user/save';
 var loginApi = host+'/user/login';
 var getAllProductApi = host+'/product/getAll';
-var search = host + '/product/search?searchText=';
+
 
 
 
@@ -51,12 +51,9 @@ Future<http.Response> getAllProduct() async {
 
 
 
-Future<http.Response> searchProduct(String value) async {
-  final response = await http
-      .get(Uri.parse(search+value));
-  return  response;
 
-}
+
+
 
 
 
